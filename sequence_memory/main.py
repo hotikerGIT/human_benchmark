@@ -2,8 +2,6 @@ import keyboard
 import time
 import pyautogui as pag
 
-# this one is tougher so comments are here
-
 # square coordinates
 matrix_dict = [
     (850, 300),
@@ -20,6 +18,17 @@ matrix_dict = [
 # current sequence
 sequence = []
 
+'''
+these are the most important parameters
+the more exact they are, the better the score will be
+
+this parameter are based off on tests, not calculations.
+it is enough to get you a score of 100.
+'''
+
+SQUARE_FLASH = 0.5125
+SCREEN_FLASH = 1
+
 running = True
 work = False
 while running:
@@ -27,6 +36,8 @@ while running:
         running = False
 
     if keyboard.is_pressed('ctrl'):
+        # NOTE: in order for programme to work properly,
+        # you should launch it while the first square is flashing on the screen
         work = True
 
     if keyboard.is_pressed('alt'):
@@ -36,19 +47,10 @@ while running:
     if work:
         # skipping previous steps as we memorized them already
         for i in range(len(sequence)):
-            '''
-            this is the most important parameter
-            the more exact it is, the better the score will be
-            
-            if it is way too long, the programme wont capture the new square
-            if it is way too short, the programme will repeat the previous square
-            
-            this parameter is based off on tests, not calculations.
-            '''
-            time.sleep(0.5)
+            time.sleep(SQUARE_FLASH)
 
         # screening the last square, which is new
-        screen = pag.screenshot('screen.png', region=(849, 299, 252, 252))
+        screen = pag.screenshot(region=(849, 299, 252, 252))
 
         # checking all the squares of the screenshot for being lit up
         for coord in matrix_dict:
@@ -58,11 +60,11 @@ while running:
                 sequence.append(coord)
 
         # letting the square disappear before clicking
-        time.sleep(0.5)
+        time.sleep(SQUARE_FLASH)
 
         # click all the coordinates of squares in sequence
         for square in sequence:
             pag.click(square)
 
         # let screen light up after completing sequence
-        time.sleep(1.2)
+        time.sleep(SCREEN_FLASH)
